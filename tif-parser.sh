@@ -2,6 +2,7 @@
 
 echo "Enter the name of the file you want to parse:"
 read input_file
+echo $input_file
 if [ -f $input_file ]; then
 	file $input_file|grep TIFF>/dev/null
 	if [ `echo $?` == 0 ]; then
@@ -15,23 +16,23 @@ if [ -f $input_file ]; then
 				else
                                 	printf "The byte order is \x4D\x4D: Big endian order\n"
 				fi
-			IFD=`hexdump -s 4 -n 4 $input_file |cut -d " " -f2|head -1`
-			echo "Image File Directory at 0x$IFD"
-			hexdump -s '0x'$IFD $input_file|cut -c 9- > $input_file.ifd
-			for i in `cat $input_file.ifd`
-			do
-				echo $i
-			done
+				IFD=`hexdump -s 4 -n 4 $input_file |cut -d " " -f2|head -1`
+				echo "Image File Directory at 0x$IFD"
+				hexdump -s '0x'$IFD $input_file|cut -c 9-|tr -d "[:space:]" > tmp.ifd
+				#for i in `cat $input_file.ifd`
+				#do
+				#	echo $i
+				#done
 			else
 				echo "ERROR: This is not a TIFF file"
 			fi
 			
 		else
-			echo "ERROR: Please enter TIFF files only"
+			echo "ERROR: This is not a TIFF file"
 		fi
 	else
-		echo "ERROR: Please enter TIFF files only"
+		echo "ERROR: This is not a TIFF file"
 	fi
 else
-	echo "File not present"
+	echo "ERROR: File not present"
 fi
