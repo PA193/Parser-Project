@@ -369,7 +369,6 @@ int main(){
     		printf("ERROR: File not found or File name too Long\n");
     		exit(-1);
     	}
-	printf("SEEK_END: %d\n", SEEK_END);
 
 	fread(buffer, 2, 1, fp);
 
@@ -401,7 +400,7 @@ int main(){
 	printf("The first IFD is at  0x%02x\n", ifd_offset);
 
 	/* Read number of directory entries */
-	fseek(fp, ifd_offset, SEEK_SET);
+	int ret=fseek(fp, ifd_offset, SEEK_SET);
 	fread(&entries, 1, 2, fp);
 	if(ret_s!=ret_f)
         entries=byte_swap16(entries);
