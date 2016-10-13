@@ -354,15 +354,18 @@ int main(){
 	char buffer[5];
 	int i;
 	printf("Enter filename to parse:\n");					//Input file from user
-	scanf("%s", &fname);
-	if(strlen(fname) > 269){
+	//scanf("%s", &fname);
+	fgets(fname, 269, stdin);
+	if ((strlen(fname)>0) && (fname[strlen (fname) - 1] == '\n'))
+        fname[strlen (fname) - 1] = '\0';
+	/*if(strlen(fname) > 269){
 		printf("ERROR: File name must not exceed 256 characters\n");
 		exit(-1);
-	}
+	}*/
 
 	FILE *fp=fopen(fname, "rb");
 	if(!fp){
-    		printf("ERROR: File not found\n");
+    		printf("ERROR: File not found or File name too Long\n");
     		exit(-1);
     	}
 
