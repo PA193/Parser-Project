@@ -5,6 +5,7 @@
 #include <inttypes.h>
 #include <math.h>
 
+/* Function to find out system endianness */
 int system_byteorder(){
 int num = 1;
 
@@ -20,6 +21,7 @@ else
 }
 }
 
+/* Function to find out file endianness */
 int file_byteorder(uint16_t b0, uint16_t b1){
 if(b0=='I' && b1=='I'){
         printf("The file byte order is Little Endian\n");
@@ -35,21 +37,24 @@ else{
         }
 }
 
+/* Function to swap 2 bytes if endianness does not match */
 uint16_t byte_swap16(uint16_t value){
 return (((value>> 8)) | (value << 8));
 }
 
+/* Function to swap 4 bytes if endianness does not match */
 uint32_t byte_swap32(uint32_t value){
 return (((value&0x000000FF)<<24)+((value&0x0000FF00)<<8)+((value&0x00FF0000)>>8)+((value&0xFF000000)>>24));
 }
 
+/*Function to read the values of IFD tags */
 uint32_t read_value(FILE *fp, uint16_t tag, int ret_s, int ret_f){
 uint32_t value=0;
 uint16_t val=0;
 switch(tag){
 
 	case 254:
-		printf("New Subfile Type : ");
+		printf("New Subfile Type : ");			//Read Tag 254 for New Subfile Type Field
 		fseek(fp, 6, SEEK_CUR);
 		fread(&value, 1, 4, fp);
 		if(ret_s!=ret_f)
@@ -59,7 +64,7 @@ switch(tag){
 		break;
 
 	case 255:
-		printf("Subfile Type is : ");
+		printf("Subfile Type is : ");			//Read Tag 255 for Subfile Type Field
                 fseek(fp, 6, SEEK_CUR);
                 fread(&val, 1, 2, fp);
                 if(ret_s!=ret_f)
@@ -70,7 +75,7 @@ switch(tag){
 		break;
 
 	case 256:
-                printf("Image Width is : ");
+                printf("Image Width is : ");			//Read Tag 256 for Image Width Field
 		fread(&val, 1, 2, fp);
 		if(ret_s!=ret_f)
 		val=byte_swap16(val);
@@ -95,7 +100,7 @@ switch(tag){
                 break;
 
         case 257:
-                printf("Image Length is : ");
+                printf("Image Length is : ");			//Read Tag 257 for Image Length Field
 		fread(&val, 1, 2, fp);
                 if(ret_s!=ret_f)
                 val=byte_swap16(val);
@@ -120,7 +125,7 @@ switch(tag){
                 break;
 
 	case 258:
-		printf("Bits per Sample is : ");
+		printf("Bits per Sample is : ");		//Read Tag 258 for Bits/Sample Field
                 fseek(fp, 2, SEEK_CUR);
 		uint32_t count;
 		uint32_t c;
@@ -162,7 +167,7 @@ switch(tag){
 		break;
 
 	case 259:
-		printf("Compression is : ");
+		printf("Compression is : ");			//Read Tag 259 for Compression Field
                 fseek(fp, 6, SEEK_CUR);
                 fread(&val, 1, 2, fp);
                 if(ret_s!=ret_f)
@@ -177,7 +182,7 @@ switch(tag){
 		break;
 
 	case 296:
-		printf("Resolution unit is : ");
+		printf("Resolution unit is : ");		//Read Tag 296 for Resolution Unit Field
                 fseek(fp, 6, SEEK_CUR);
                 fread(&val, 1, 2, fp);
                 if(ret_s!=ret_f)
@@ -194,7 +199,7 @@ switch(tag){
                 break;
 	
 	case 282:
-		printf("XResolution is : ");
+		printf("XResolution is : ");			//Read Tag 282 for X Resolution Field
                 fseek(fp, 6, SEEK_CUR);
 		fread(&value, 1, 4, fp);
 		if(ret_s!=ret_f)
@@ -219,7 +224,7 @@ switch(tag){
                 break;
 
 	case 283:
-		printf("YResolution is : ");
+		printf("YResolution is : ");			//Read Tag 283 for Y Resolution Field
                 fseek(fp, 6, SEEK_CUR);
 		fread(&value, 1, 4, fp);
 		if(ret_s!=ret_f)
@@ -244,7 +249,7 @@ switch(tag){
                 break;
 
 	case 262:
-		printf("Photometric Interpretation is : ");
+		printf("Photometric Interpretation is : ");		//Read Tag 262 for Photometric Interpretation Field
                 fseek(fp, 6, SEEK_CUR);
                 fread(&val, 1, 2, fp);
                 if(ret_s!=ret_f)
@@ -273,7 +278,7 @@ switch(tag){
                 break;
 
 	case 279:
-		printf("Strip byte count is : ");
+		printf("Strip byte count is : ");				//Read Tag 279 for Strip byte count Field
 		fread(&val, 1, 2, fp);
                 if(ret_s!=ret_f)
                 val=byte_swap16(val);
@@ -298,7 +303,7 @@ switch(tag){
                 break;
 
 	case 278:
-		printf("Rows per strip is : ");
+		printf("Rows per strip is : ");					//Read Tag 278 for Rows/Strip Field
 		fread(&val, 1, 2, fp);
                 if(ret_s!=ret_f)
                 val=byte_swap16(val);
@@ -331,14 +336,9 @@ switch(tag){
                 return value;
 		break;
 	}
-/*fseek(fp, 6, SEEK_CUR);
-fread(&value, 1, 4, fp);
-if(ret_s!=ret_f)
-value=byte_swap32(value);
-printf("%u\n", value);
-return value;*/
 }
 
+/* Function to read the tag value for each field */
 uint16_t read_tag(FILE *fp, int ret_s, int ret_f){
 uint16_t tag=0;
 fread(&tag, 1, 2, fp);
@@ -348,15 +348,14 @@ tag=byte_swap16(tag);
 return tag;
 }
 
-
+/* Main Function */
 int main(){
 	char fname[270];
 	char buffer[5];
 	int i;
-	printf("Enter filename to parse:\n");
+	printf("Enter filename to parse:\n");					//Input file from user
 	scanf("%s", &fname);
 	if(strlen(fname) > 269){
-	//	printf("%d\n", strlen(fname));
 		printf("ERROR: File name must not exceed 256 characters\n");
 		exit(-1);
 	}
@@ -373,7 +372,7 @@ int main(){
 	ret_s=system_byteorder();
 	ret_f=file_byteorder(buffer[0], buffer[1]);
 
-	
+	/* Read TIFF magic number */	
 	uint32_t ifd_offset=0;
 	uint16_t ver_num=0;
 	uint16_t entries=0;
@@ -390,12 +389,14 @@ int main(){
 	printf("ERROR: Bad Input. This is not a TIF file\n");
 	exit(-1);
 	}
-
+	
+	/* Read IFD offset */
 	fread(&ifd_offset, 1, 4, fp);
 	if(ret_s!=ret_f)
         ifd_offset=byte_swap32(ifd_offset);
 	printf("The first IFD is at  0x%02x\n", ifd_offset);
 
+	/* Read number of directory entries */
 	fseek(fp, ifd_offset, SEEK_SET);
 	fread(&entries, 1, 2, fp);
 	if(ret_s!=ret_f)
