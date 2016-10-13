@@ -48,7 +48,7 @@ return (((value&0x000000FF)<<24)+((value&0x0000FF00)<<8)+((value&0x00FF0000)>>8)
 }
 
 /*Function to read the values of IFD tags */
-uint32_t read_value(FILE *fp, uint16_t tag, int ret_s, int ret_f){
+uint32_t read_value(FILE *fp, uint16_t tag, int ret_s, int ret_f, uint32_t len){
 uint32_t value=0;
 uint16_t val=0;
 switch(tag){
@@ -152,6 +152,10 @@ switch(tag){
 		fread(&value, 1, 4, fp);
 		if(ret_s!=ret_f)
                 value=byte_swap32(value);
+		if(value > len){
+        	printf("ERROR: Malformed TIFF File\n");
+        	exit(-1);
+        	}
 		long int current=ftell(fp);
 		fseek(fp, value, SEEK_SET);
 		for(c=1;c<=count&&c<=4;c++){
@@ -204,6 +208,10 @@ switch(tag){
 		fread(&value, 1, 4, fp);
 		if(ret_s!=ret_f)
                 value=byte_swap32(value);
+		if(value > len){
+        	printf("ERROR: Malformed TIFF File\n");
+	        exit(-1);
+        	}
 		long int cur_xres=ftell(fp);
 		fseek(fp, value, SEEK_SET);
 		uint32_t xnum, xden;
@@ -229,6 +237,10 @@ switch(tag){
 		fread(&value, 1, 4, fp);
 		if(ret_s!=ret_f)
                 value=byte_swap32(value);
+		if(value > len){
+                printf("ERROR: Malformed TIFF File\n");
+                exit(-1);
+		}
                 long int cur_yres=ftell(fp);
                 fseek(fp, value, SEEK_SET);
                 uint32_t ynum, yden;
@@ -370,6 +382,10 @@ int main(){
     		exit(-1);
     	}
 
+	fseek(fp, 0L, SEEK_END);
+	uint32_t len=ftell(fp);
+	fseek(fp, 0L, SEEK_SET);
+
 	fread(buffer, 2, 1, fp);
 
 	int ret_s, ret_f;
@@ -397,6 +413,10 @@ int main(){
 	fread(&ifd_offset, 1, 4, fp);
 	if(ret_s!=ret_f)
         ifd_offset=byte_swap32(ifd_offset);
+	if(ifd_offset > len){
+	printf("ERROR: Malformed TIFF File\n");
+	exit(-1);
+	}
 	printf("The first IFD is at  0x%02x\n", ifd_offset);
 
 	/* Read number of directory entries */
@@ -408,9 +428,9 @@ int main(){
 
 	for(i=0; i<entries; i++){
 		tag = read_tag(fp, ret_s, ret_f);
-		read_value(fp, tag, ret_s, ret_f);
+		read_value(fp, tag, ret_s, ret_f, len);
 	
-}
+	}	
 
 	fclose(fp);
 
