@@ -336,6 +336,7 @@ switch(tag){
                 return value;
 		break;
 	}
+return 0;
 }
 
 /* Function to read the tag value for each field */
@@ -368,6 +369,7 @@ int main(){
     		printf("ERROR: File not found or File name too Long\n");
     		exit(-1);
     	}
+	printf("SEEK_END: %d\n", SEEK_END);
 
 	fread(buffer, 2, 1, fp);
 
@@ -380,7 +382,6 @@ int main(){
 	uint16_t ver_num=0;
 	uint16_t entries=0;
 	uint16_t tag=0;
-	uint32_t value=0;
 	fseek(fp, 2, SEEK_SET);
 	fread(&ver_num, 1, 2, fp);
 	if(ret_s!=ret_f)
