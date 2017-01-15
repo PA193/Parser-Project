@@ -420,7 +420,8 @@ int main(){
 	printf("The first IFD is at  0x%02x\n", ifd_offset);
 
 	/* Read number of directory entries */
-	int ret=fseek(fp, ifd_offset, SEEK_SET);
+	//int ret=fseek(fp, ifd_offset, SEEK_SET);
+	fseek(fp, ifd_offset, SEEK_SET);
 	fread(&entries, 1, 2, fp);
 	if(ret_s!=ret_f)
         entries=byte_swap16(entries);
