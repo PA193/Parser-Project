@@ -431,6 +431,10 @@ int main(){
 	fread(&entries, 1, 2, fp);
 	if(ret_s!=ret_f)
         entries=byte_swap16(entries);
+	if(entries < 1 || entries > 64){
+	printf("ERROR: Malformed TIFF File\n");
+	exit(-1);
+	}
 	printf("Number of directory entries: %u\n", entries);
 
 	for(i=0; i<entries; i++){
