@@ -366,9 +366,15 @@ int main(){
 	char fname[270];
 	char buffer[5];
 	int i;
-	printf("Enter filename to parse:\n");					//Input file from user
-	//scanf("%s", &fname);
-	fgets(fname, 269, stdin);
+	/*printf("Enter filename to parse:\n");					//Input file from user
+	scanf("%s", &fname);
+	fgets(fname, 269, stdin);*/
+	if(argc!=2){
+		printf("USAGE: ./TiffParser <filename>\n");
+		return 0;
+		exit(-1);
+	}
+	strncpy(fname, argv[1], 270);
 	if ((strlen(fname)>0) && (fname[strlen (fname) - 1] == '\n'))
         fname[strlen (fname) - 1] = '\0';
 	/*if(strlen(fname) > 269){
