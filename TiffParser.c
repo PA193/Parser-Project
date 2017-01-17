@@ -362,7 +362,7 @@ return tag;
 }
 
 /* Main Function */
-int main(){
+int main(int argc, char* argv[]){
 	char fname[270];
 	char buffer[5];
 	int i;
