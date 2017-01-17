@@ -426,6 +426,7 @@ int main(int argc, char* argv[]){
 	printf("The first IFD is at  0x%02x\n", ifd_offset);
 
 	/* Read number of directory entries */
+	//The following unused variable ret has been deleted. 
 	//int ret=fseek(fp, ifd_offset, SEEK_SET);
 	fseek(fp, ifd_offset, SEEK_SET);
 	fread(&entries, 1, 2, fp);
