@@ -432,7 +432,7 @@ int main(int argc, char* argv[]){
 	fread(&entries, 1, 2, fp);
 	if(ret_s!=ret_f)
         entries=byte_swap16(entries);
-	if(entries < 1 || entries > 64){
+	if(entries < 1 || entries > 32){
 	printf("ERROR: Malformed TIFF File\n");
 	exit(-1);
 	}
