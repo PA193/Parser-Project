@@ -363,7 +363,7 @@ return tag;
 
 /* Main Function */
 int main(int argc, char* argv[]){
-	char fname[270];
+	char fname[64];
 	char buffer[5];
 	int i;
 	/*printf("Enter filename to parse:\n");					//Input file from user
@@ -374,7 +374,7 @@ int main(int argc, char* argv[]){
 		return 0;
 		exit(-1);
 	}
-	strncpy(fname, argv[1], 270);
+	strncpy(fname, argv[1], 64);
 	if ((strlen(fname)>0) && (fname[strlen (fname) - 1] == '\n'))
         fname[strlen (fname) - 1] = '\0';
 	/*if(strlen(fname) > 269){
